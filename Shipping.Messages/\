@@ -1,0 +1,8 @@
+using NServiceBus;
+
+namespace Shipping.Messages
+{
+    public class ShipmentAcceptedByMaple: IMessage
+    {
+    }
+}
