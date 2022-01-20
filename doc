@@ -1,0 +1,9 @@
+docker run --name dev_db -p 5432:5432 -e POSTGRES_USER=ledev -e POSTGRES_PASSWORD=ooscarry -v /tmp/postgres:/var/lib/postgresql/data -d postgres:9.5
+
+docker run --name dev_slavedb -e POSTGRES_USER=leslave -e POSTGRES_PASSWORD=ooscarry -v /tmp/postgresslave:/var/lib/postgresql/data --link dev_db:db -it postgres:9.5
+
+select * from pg_stat_replication ;
+
+select * from pg_create_physical_replication_slot('standby_replication_slot');
+
+select * from pg_replication_slots;

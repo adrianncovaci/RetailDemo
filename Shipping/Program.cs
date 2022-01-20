@@ -5,9 +5,11 @@ namespace Shipping
 {
     public class Shipping
     {
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
             Console.Title = "Shipping";
+
+            //configure logging first
 
             var endpointConfiguration = new NServiceBus.EndpointConfiguration("Shipping");
 

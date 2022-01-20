@@ -1,3 +1,5 @@
+using System.Text;
+using Newtonsoft.Json;
 using NServiceBus;
 using NServiceBus.Logging;
 using Shipping.Messages;
@@ -11,6 +13,7 @@ namespace Shipping
         IHandleTimeouts<ShipOrderWorkFlow.ShippingEscalation>
     {
         static ILog log = LogManager.GetLogger<ShipOrderWorkFlow>();
+        private HttpClient client = new HttpClient();
 
         public async Task Handle(ShipOrder message, IMessageHandlerContext context)
         {
@@ -52,6 +55,7 @@ namespace Shipping
             {
                 log.Info($"Shipment accepted by mapple");
                 Data.ShipmentAcceptedByMapple = true;
+                client.PostAsync("http://localhost:5000/ship", new JsonContent(new { OrderId = Data.OrderId, Provider = "Mapple" }));
                 MarkAsComplete();
             }
             return Task.CompletedTask;
@@ -63,6 +67,7 @@ namespace Shipping
             {
                 log.Info($"Shipment accepted by alpine");
                 Data.ShipmentAcceptedByAlpine = true;
+                client.PostAsync("http://localhost:5000", new JsonContent(new { OrderId = Data.OrderId, Provider = "Alpine" }));
                 MarkAsComplete();
             }
             return Task.CompletedTask;
@@ -85,5 +90,11 @@ namespace Shipping
         internal class ShippingEscalation
         {
         }
+    }
+    public class JsonContent : StringContent
+    {
+        public JsonContent(object obj) :
+            base(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
+        { }
     }
 }
